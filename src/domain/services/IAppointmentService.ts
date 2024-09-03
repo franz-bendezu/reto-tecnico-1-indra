@@ -7,8 +7,5 @@ export interface IAppointmentService {
 
   getAppointmentsByInsuredId(insuredId: string): Promise<IBaseAppointment[]>;
 
-  updateAppointmentStatusById(
-    id: string,
-    status: AppointmentStatusType
-  ): Promise<void>;
+  completeAppointment(insuredId: string, scheduleId: number): Promise<void>;
 }

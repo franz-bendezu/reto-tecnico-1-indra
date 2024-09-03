@@ -23,10 +23,14 @@ export class AppointmentService implements IAppointmentService {
     return this.appointmentRepository.getAllByEnsuranceId(insuredId);
   }
 
-  async updateAppointmentStatusById(
-    id: string,
-    status: AppointmentStatusType
+  async completeAppointment(
+    insuredId: string,
+    scheduleId: number
   ): Promise<void> {
-    return this.appointmentRepository.updateStatusById(id, status);
+    await this.appointmentRepository.updateStatusById(
+      insuredId,
+      scheduleId,
+      AppointmentStatusType.COMPLETED
+    );
   }
 }
