@@ -1,4 +1,4 @@
-import { IAppointment } from "../../domain/interfaces/appointment";
+import { IAppointment, IBaseAppointment } from "../../domain/interfaces/appointment";
 
 import {
   DynamoDBDocumentClient,
@@ -13,7 +13,7 @@ export class AppointmentDynamoDBRepository implements IAppointmentRepository {
 
   constructor(private docClient: DynamoDBDocumentClient) {}
 
-  async create(appointment: IAppointment): Promise<void> {
+  async create(appointment: IBaseAppointment): Promise<void> {
     await this.docClient.send(
       new PutCommand({
         TableName: AppointmentDynamoDBRepository.tableName,
