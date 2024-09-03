@@ -2,5 +2,5 @@ export type AppointmentStatusTypes = "pending" | "completed" | "cancelled";
 
 export interface IAppointmentStatus {
   status: AppointmentStatusTypes;
-  timestamp: string;
+  createdAt: string; // ISO 8601 date string
 }
