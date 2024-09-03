@@ -4,7 +4,7 @@ import type {
   SQSEvent,
   SQSHandler,
 } from "aws-lambda";
-import { appointmentSchema } from "../schemas/appointment";
+import { appointmentCreateSchema } from "../schemas/appointment";
 import { AppointmentService } from "../../domain/services/AppointmentService";
 import { AppointmentDynamoDBRepository } from "../../infraestructure/repositories/AppointmentDynamoDBRepository";
 import { insuredIdSchema } from "../schemas/insured";
@@ -28,7 +28,7 @@ export const handler: APIGatewayProxyHandler | SQSHandler = async (
     }
   } else if (event.httpMethod === "POST") {
     try {
-      const data = appointmentSchema.parse(JSON.parse(event.body || "{}"));
+      const data = appointmentCreateSchema.parse(JSON.parse(event.body || "{}"));
 
       await appointmentService.createAppointment(data);
       return {
