@@ -15,21 +15,22 @@ import { z } from "zod";
 const client = new DynamoDBClient();
 const docClient = DynamoDBDocumentClient.from(client);
 const appointmentRepository = new AppointmentDynamoDBRepository(docClient);
-const serviceAppointment = new AppointmentService(appointmentRepository);
+const appointmentService = new AppointmentService(appointmentRepository);
 
 export const handler: APIGatewayProxyHandler | SQSHandler = async (
   event: SQSEvent | APIGatewayProxyEvent
 ) => {
   if ("Records" in event) {
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ message: "Hello from appointmentHandler" }),
-    };
+    for (const record of event.Records) {
+      const { insuredId, scheduleId } = JSON.parse(record.body);
+
+      await appointmentService.completeAppointment(insuredId, scheduleId);
+    }
   } else if (event.httpMethod === "POST") {
     try {
       const data = appointmentSchema.parse(JSON.parse(event.body || "{}"));
 
-      await serviceAppointment.createAppointment(data);
+      await appointmentService.createAppointment(data);
       return {
         statusCode: 200,
         body: JSON.stringify({ message: "Appointment created" }),
@@ -53,7 +54,7 @@ export const handler: APIGatewayProxyHandler | SQSHandler = async (
   } else if (event.httpMethod === "GET") {
     try {
       const ensuredId = insuredIdSchema.parse(event.pathParameters?.ensuredId);
-      const appointments = await serviceAppointment.getAppointmentsByInsuredId(
+      const appointments = await appointmentService.getAppointmentsByInsuredId(
         ensuredId
       );
 
