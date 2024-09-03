@@ -6,5 +6,9 @@ export interface IAppointmentRepository {
 
   getAllByEnsuranceId(insuredId: string): Promise<IBaseAppointment[]>;
 
-  updateStatusById(id: string, status: AppointmentStatusTypes): Promise<void>;
+  updateStatusById(
+    insuredId: string,
+    scheduleId: number,
+    status: AppointmentStatusTypes
+  ): Promise<void>;
 }
