@@ -53,7 +53,23 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-
+    sns:
+      Type: AWS::SNS::Topic
+      Properties:
+        DisplayName: Appointment
+        TopicName: Appointment
+    sqs_pe:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: AppointmentPe
+    sqs_cl:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: AppointmentCl
+    sqs:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: AppointmentConfirm
 functions:
   appointment:
     handler: src/adapters/handlers/appointmentHandler.handler
@@ -61,10 +77,29 @@ functions:
       - httpApi:
           path: /appointments
           method: get
+          cors: true
       - httpApi:
           path: /insureds/{insuredId}/appointments
           method: get
-  appointment-cl:
+          cors: true
+      - sqs: 
+          arn:
+            Fn::GetAtt:
+              - SqsAppointmentConfirm
+              - Arn
+  appointment_cl:
     handler: src/adapters/handlers/appointmentPEHandler.handler
-  appointment-pe:
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - SqsAppointmentPe
+              - Arn
+  appointment_pe:
     handler: src/adapters/handlers/appointmentCLHandler.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - SqsAppointmentCl
+              - Arn
