@@ -4,8 +4,11 @@ import { appointmentCreateSchema } from "../schemas/appointment";
 import { AppointmentCountryProducer } from "../../infraestructure/messasing/AppointmentCountryProducer";
 import { AppointmentCountryRDSRepository } from "../../infraestructure/repositories/AppointmentCountryRDSRepository";
 import { AppointmentPEService } from "../../domain/services/AppointmentPEService";
+import { EventBridgeClient } from "@aws-sdk/client-eventbridge";
 
-const appointmentProducer = new AppointmentCountryProducer();
+const appointmentProducer = new AppointmentCountryProducer(
+  new EventBridgeClient({})
+);
 const appointmentCountryRepository = new AppointmentCountryRDSRepository();
 const appointmentService = new AppointmentPEService(
   appointmentCountryRepository,
