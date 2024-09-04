@@ -3,10 +3,10 @@ import { z } from "zod";
 import { appointmentCreateSchema } from "../schemas/appointment";
 import { AppointmentCLService } from "../../domain/services/AppointmentCLService";
 import { AppointmentCountryProducer } from "../../infraestructure/messasing/AppointmentCountryProducer";
-import { AppointmentRDSRepository } from "../../infraestructure/repositories/AppointmentRDSRepository";
+import { AppointmentCountryRDSRepository } from "../../infraestructure/repositories/AppointmentCountryRDSRepository";
 
 const appointmentProducer = new AppointmentCountryProducer();
-const appointmentCountryRepository = new AppointmentRDSRepository();
+const appointmentCountryRepository = new AppointmentCountryRDSRepository();
 const appointmentService = new AppointmentCLService(
   appointmentCountryRepository,
   appointmentProducer

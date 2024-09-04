@@ -2,7 +2,7 @@ import { SQSHandler } from "aws-lambda";
 import { z } from "zod";
 import { appointmentCreateSchema } from "../schemas/appointment";
 import { AppointmentCountryProducer } from "../../infraestructure/messasing/AppointmentCountryProducer";
-import { AppointmentCountryRDSRepository } from "../../infraestructure/repositories/AppointmentRDSRepository";
+import { AppointmentCountryRDSRepository } from "../../infraestructure/repositories/AppointmentCountryRDSRepository";
 import { AppointmentPEService } from "../../domain/services/AppointmentPEService";
 
 const appointmentProducer = new AppointmentCountryProducer();
