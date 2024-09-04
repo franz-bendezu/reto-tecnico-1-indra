@@ -58,18 +58,34 @@ resources:
       Properties:
         DisplayName: Appointment
         TopicName: Appointment
-    sqs_pe:
+    sqsPE:
       Type: AWS::SQS::Queue
       Properties:
         QueueName: SqsAppointmentPe
-    sqs_cl:
+    sqsCL:
       Type: AWS::SQS::Queue
       Properties:
         QueueName: SqsAppointmentCl
     sqs:
       Type: AWS::SQS::Queue
       Properties:
-        QueueName: SqsAppointmentConfirm
+        QueueName: SqsAppointmentCompleted
+
+    evAppointment:
+      Type: AWS::Events::Rule
+      Properties:
+        EventPattern:
+          source:
+            - "appointment.service"
+          detail-type:
+            - "appointmentCompleted"
+        Targets:
+          - Arn:
+              Fn::GetAtt:
+                - SqsAppointmentCompleted
+                - Arn
+            Id: SQSConpletedTarget
+
 functions:
   appointment:
     handler: src/adapters/handlers/appointmentHandler.handler
@@ -82,10 +98,10 @@ functions:
           path: /insureds/{insuredId}/appointments
           method: get
           cors: true
-      - sqs: 
+      - sqs:
           arn:
             Fn::GetAtt:
-              - SqsAppointmentConfirm
+              - SqsAppointmentCompleted
               - Arn
   appointment_cl:
     handler: src/adapters/handlers/appointmentPEHandler.handler
