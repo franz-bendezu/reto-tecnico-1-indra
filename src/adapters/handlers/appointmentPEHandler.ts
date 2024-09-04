@@ -1,4 +1,4 @@
-import { SQSHandler } from "aws-lambda";
+import type { SQSHandler } from "aws-lambda";
 import { z } from "zod";
 import { appointmentCreateSchema } from "../schemas/appointment";
 import { AppointmentCountryProducer } from "../../infraestructure/messasing/AppointmentCountryProducer";
