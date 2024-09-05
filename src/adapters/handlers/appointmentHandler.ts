@@ -13,9 +13,9 @@ import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { z } from "zod";
 import { AppointmentCountryProducer } from "../../infraestructure/messasing/AppointmentCountryProducer";
 import { SNSClient } from "@aws-sdk/client-sns";
-import { ConfigEnv } from "../../infraestructure/config/ConfigEnv";
+import { AppointmentConfigEnv } from "../../infraestructure/config/AppointmentConfigEnv";
 
-const config = new ConfigEnv();
+const config = new AppointmentConfigEnv();
 const client = new DynamoDBClient();
 const docClient = DynamoDBDocumentClient.from(client);
 const appointmentRepository = new AppointmentDynamoDBRepository(
