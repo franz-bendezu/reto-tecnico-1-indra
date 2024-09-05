@@ -1,3 +1,4 @@
+import { IAppointmentCountryProducer } from "../../infraestructure/messasing/IAppointmentCountryProducer";
 import { IAppointmentRepository } from "../../infraestructure/repositories/IAppointmentRepository";
 import { IBaseAppointment } from "../interfaces/appointment";
 import { IAppointmentCreate } from "../interfaces/appointment-create";
@@ -5,7 +6,10 @@ import { AppointmentStatusType } from "../models/AppointmentStatus";
 import { IAppointmentService } from "./IAppointmentService";
 
 export class AppointmentService implements IAppointmentService {
-  constructor(private appointmentRepository: IAppointmentRepository) {}
+  constructor(
+    private appointmentRepository: IAppointmentRepository,
+    private appointmentCountryProducer: IAppointmentCountryProducer
+  ) {}
 
   async createAppointment(newAppointment: IAppointmentCreate): Promise<void> {
     const appointment: IBaseAppointment = {
@@ -15,6 +19,7 @@ export class AppointmentService implements IAppointmentService {
       lastStatus: AppointmentStatusType.PENDING,
     };
     await this.appointmentRepository.create(appointment);
+    await this.appointmentCountryProducer.sendAppointment(newAppointment);
   }
 
   async getAppointmentsByInsuredId(
