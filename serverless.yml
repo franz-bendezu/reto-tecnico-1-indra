@@ -53,7 +53,9 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
           Resource:
-            - Fn::GetAtt: [UsersTable, Arn]
+            - Fn::GetAtt: 
+                - AppointmentTable
+                - Arn
   environment:
     APPOINTMENT_TABLE: ${param:tableName}
 
@@ -105,7 +107,7 @@ resources:
         Targets:
           - Arn:
               Fn::GetAtt:
-                - "SqsAppointmentCompleted"
+                - sqs
                 - Arn
             Id: SQSCompletedTarget
 
@@ -122,7 +124,7 @@ functions:
       - sqs:
           arn:
             Fn::GetAtt:
-              - "SqsAppointmentCompleted"
+              - sqs
               - Arn
   appointment_cl:
     handler: src/adapters/handlers/appointmentPEHandler.handler
@@ -130,7 +132,7 @@ functions:
       - sqs:
           arn:
             Fn::GetAtt:
-              - SqsAppointmentPe
+              - sqsPE
               - Arn
   appointment_pe:
     handler: src/adapters/handlers/appointmentCLHandler.handler
@@ -138,5 +140,5 @@ functions:
       - sqs:
           arn:
             Fn::GetAtt:
-              - SqsAppointmentCl
+              - sqsCL
               - Arn
