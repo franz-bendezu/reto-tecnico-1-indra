@@ -7,11 +7,11 @@ import {
   ScanCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { IAppointmentRepository } from "./IAppointmentRepository";
-import { IConfig } from "../config/IConfig";
+import { IAppointmentConfig } from "../config/IAppointmentConfig";
 
 export class AppointmentDynamoDBRepository implements IAppointmentRepository {
 
-  constructor(private docClient: DynamoDBDocumentClient, private config: IConfig) {}
+  constructor(private docClient: DynamoDBDocumentClient, private config: IAppointmentConfig) {}
 
   async create(appointment: IBaseAppointment): Promise<void> {
     await this.docClient.send(
