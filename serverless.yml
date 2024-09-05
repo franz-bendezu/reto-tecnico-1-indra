@@ -59,6 +59,19 @@ provider:
             - sns:Publish
           Resource:
             - Ref: sns
+        - Effect: Allow
+          Action:
+            - sqs:SendMessage
+          Resource:
+            - Fn::GetAtt:
+                - sqs
+                - Arn
+            - Fn::GetAtt:
+                - sqsPE
+                - Arn
+            - Fn::GetAtt:
+                - sqsCL
+                - Arn
   environment:
     APPOINTMENT_TABLE: ${param:tableName}
     SNS_TOPIC_ARN:
