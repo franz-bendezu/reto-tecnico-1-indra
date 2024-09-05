@@ -1,6 +1,6 @@
-import { IConfig, IDatabaseConfig, IEventBridgeConfig, ISnsConfig } from "./IConfig";
+import { IAppointmentConfig, IDatabaseConfig, IEventBridgeConfig, ISnsConfig } from "./IAppointmentConfig";
 
-export class ConfigEnv implements IConfig {
+export class AppointmentConfigEnvv implements IAppointmentConfig {
   get sns(): ISnsConfig {
     return {
       get topicArnPE(): string {

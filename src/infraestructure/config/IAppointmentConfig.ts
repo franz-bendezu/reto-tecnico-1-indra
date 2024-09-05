@@ -16,7 +16,7 @@ export interface ISnsConfig {
   get topicArnCL(): string;
 }
 
-export interface IConfig {
+export interface IAppointmentConfig {
   get awsRegion(): string;
   get rdsDatabase(): IDatabaseConfig;
   get dynamoDBTableName(): string;
