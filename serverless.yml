@@ -96,15 +96,13 @@ functions:
       - httpApi:
           path: /appointments
           method: get
-          cors: true
       - httpApi:
           path: /insureds/{insuredId}/appointments
           method: get
-          cors: true
       - sqs:
           arn:
             Fn::GetAtt:
-              - SqsAppointmentCompleted
+              - "SqsAppointmentCompleted"
               - Arn
   appointment_cl:
     handler: src/adapters/handlers/appointmentPEHandler.handler
