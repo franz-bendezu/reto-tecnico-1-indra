@@ -13,6 +13,12 @@ export class AppointmentCountryProducer implements IAppointmentCountryProducer {
     const snsConfig = this.config.sns;
     const params: PublishCommandInput = {
       Message: JSON.stringify(appointment),
+      MessageAttributes: {
+        countryISO: {
+          DataType: "String",
+          StringValue: appointment.countryISO,
+        },
+      },
       TopicArn:
         appointment.countryISO === "PE"
           ? snsConfig.topicArnPE
