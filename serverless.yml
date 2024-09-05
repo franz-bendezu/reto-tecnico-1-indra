@@ -54,6 +54,11 @@ provider:
             - Fn::GetAtt:
                 - AppointmentTable
                 - Arn
+        - Effect: Allow
+          Action:
+            - sns:Publish
+          Resource:
+            - Ref: sns
   environment:
     APPOINTMENT_TABLE: ${param:tableName}
     SNS_TOPIC_ARN:
