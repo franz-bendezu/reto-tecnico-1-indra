@@ -12,7 +12,7 @@ export class AppointmentConfigEnv implements IAppointmentConfig {
     };
   }
   get dynamoDBTableName(): string {
-    return process.env.DYNAMODB_TABLE_NAME!;
+    return process.env.APPOINTMENT_TABLE!;
   }
   get awsRegion(): string {
     return process.env.AWS_REGION!;
