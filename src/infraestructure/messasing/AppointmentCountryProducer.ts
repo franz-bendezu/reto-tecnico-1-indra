@@ -5,10 +5,10 @@ import {
 } from "@aws-sdk/client-sns";
 import { IAppointmentCountryProducer } from "./IAppointmentCountryProducer";
 import { IAppointmentCreate } from "../../domain/interfaces/appointment-create";
-import { IConfig } from "../config/IConfig";
+import { IAppointmentConfig } from "../config/IAppointmentConfig";
 
 export class AppointmentCountryProducer implements IAppointmentCountryProducer {
-  constructor(private snsClient: SNSClient, private config: IConfig) {}
+  constructor(private snsClient: SNSClient, private config: IAppointmentConfig) {}
   async sendAppointment(appointment: IAppointmentCreate): Promise<void> {
     const snsConfig = this.config.sns;
     const params: PublishCommandInput = {
