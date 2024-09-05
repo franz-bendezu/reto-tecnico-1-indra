@@ -1,15 +1,20 @@
 import type { SQSHandler } from "aws-lambda";
 import { z } from "zod";
 import { appointmentCreateSchema } from "../schemas/appointment";
-import { AppointmentCountryProducer } from "../../infraestructure/messasing/AppointmentCountryProducer";
 import { AppointmentCountryRDSRepository } from "../../infraestructure/repositories/AppointmentCountryRDSRepository";
 import { AppointmentPEService } from "../../domain/services/AppointmentPEService";
 import { EventBridgeClient } from "@aws-sdk/client-eventbridge";
+import { AppointmentProducer } from "../../infraestructure/messasing/AppointmentProducer";
+import { ConfigEnv } from "../../infraestructure/config/ConfigEnv";
 
-const appointmentProducer = new AppointmentCountryProducer(
-  new EventBridgeClient({})
+const config = new ConfigEnv();
+const appointmentProducer = new AppointmentProducer(
+  new EventBridgeClient({}),
+  config
 );
-const appointmentCountryRepository = new AppointmentCountryRDSRepository();
+const appointmentCountryRepository = new AppointmentCountryRDSRepository(
+  config
+);
 const appointmentService = new AppointmentPEService(
   appointmentCountryRepository,
   appointmentProducer

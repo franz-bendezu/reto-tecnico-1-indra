@@ -11,11 +11,26 @@ import { insuredIdSchema } from "../schemas/insured";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { z } from "zod";
+import { AppointmentCountryProducer } from "../../infraestructure/messasing/AppointmentCountryProducer";
+import { SNSClient } from "@aws-sdk/client-sns";
+import { ConfigEnv } from "../../infraestructure/config/ConfigEnv";
 
+const config = new ConfigEnv();
 const client = new DynamoDBClient();
 const docClient = DynamoDBDocumentClient.from(client);
-const appointmentRepository = new AppointmentDynamoDBRepository(docClient);
-const appointmentService = new AppointmentService(appointmentRepository);
+const appointmentRepository = new AppointmentDynamoDBRepository(
+  docClient,
+  config
+);
+const snsClient = new SNSClient({});
+const appointmentCountryProducer = new AppointmentCountryProducer(
+  snsClient,
+  config
+);
+const appointmentService = new AppointmentService(
+  appointmentRepository,
+  appointmentCountryProducer
+);
 
 export const handler: APIGatewayProxyHandler | SQSHandler = async (
   event: SQSEvent | APIGatewayProxyEvent
@@ -28,7 +43,9 @@ export const handler: APIGatewayProxyHandler | SQSHandler = async (
     }
   } else if (event.httpMethod === "POST") {
     try {
-      const data = appointmentCreateSchema.parse(JSON.parse(event.body || "{}"));
+      const data = appointmentCreateSchema.parse(
+        JSON.parse(event.body || "{}")
+      );
 
       await appointmentService.createAppointment(data);
       return {
