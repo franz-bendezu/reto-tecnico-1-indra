@@ -56,6 +56,8 @@ provider:
                 - Arn
   environment:
     APPOINTMENT_TABLE: ${param:tableName}
+    SNS_TOPIC_ARN_PE: sns-appointment-pe
+    SNS_TOPIC_ARN_CL: sns-appointment-cl
 
 resources:
   Resources:
@@ -69,10 +71,10 @@ resources:
           - AttributeName: insuredId
             AttributeType: S
         KeySchema:
-          - AttributeName: scheduleId
-            KeyType: RANGE
           - AttributeName: insuredId
             KeyType: HASH
+          - AttributeName: scheduleId
+            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
