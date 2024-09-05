@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.5.2",
-    "serverless": "^4.2.4"
+    "serverless": "^4.2.4",
+    "serverless-localstack": "^1.2.1"
   }
 }

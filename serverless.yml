@@ -2,6 +2,9 @@
 service: appointment
 frameworkVersion: "4"
 
+plugins:
+  - serverless-localstack
+
 build:
   esbuild:
   # Enable or Disable bundling the function code and dependencies. (Default: true)
