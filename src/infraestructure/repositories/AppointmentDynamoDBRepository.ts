@@ -7,16 +7,16 @@ import {
   ScanCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { IAppointmentRepository } from "./IAppointmentRepository";
+import { IConfig } from "../config/IConfig";
 
 export class AppointmentDynamoDBRepository implements IAppointmentRepository {
-  private static tableName = "appointments";
 
-  constructor(private docClient: DynamoDBDocumentClient) {}
+  constructor(private docClient: DynamoDBDocumentClient, private config: IConfig) {}
 
   async create(appointment: IBaseAppointment): Promise<void> {
     await this.docClient.send(
       new PutCommand({
-        TableName: AppointmentDynamoDBRepository.tableName,
+        TableName: this.config.dynamoDBTableName,
         Item: {
           ...appointment,
           createdAt: new Date().toISOString(),
@@ -35,7 +35,7 @@ export class AppointmentDynamoDBRepository implements IAppointmentRepository {
   async getAllByEnsuranceId(insuredId: string): Promise<IAppointment[]> {
     const { Items = [] } = await this.docClient.send(
       new ScanCommand({
-        TableName: AppointmentDynamoDBRepository.tableName,
+        TableName: this.config.dynamoDBTableName,
         FilterExpression: "insuredId = :insuredId",
         ExpressionAttributeValues: {
           ":insuredId": insuredId,
@@ -53,7 +53,7 @@ export class AppointmentDynamoDBRepository implements IAppointmentRepository {
   ): Promise<void> {
     const { Item } = await this.docClient.send(
       new GetCommand({
-        TableName: AppointmentDynamoDBRepository.tableName,
+        TableName: this.config.dynamoDBTableName,
         Key: {
           insuredId,
           scheduleId,
@@ -65,7 +65,7 @@ export class AppointmentDynamoDBRepository implements IAppointmentRepository {
 
     await this.docClient.send(
       new PutCommand({
-        TableName: AppointmentDynamoDBRepository.tableName,
+        TableName: this.config.dynamoDBTableName,
         Item: {
           ...Item,
           lastStatus: status,

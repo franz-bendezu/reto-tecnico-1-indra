@@ -3,22 +3,23 @@ import { Signer } from "@aws-sdk/rds-signer";
 import mysql from "mysql2/promise";
 import type { Connection } from "mysql2/promise";
 import { IAppointmentCountryRepository } from "./IAppointmentCountryRepository";
+import { IConfig } from "../config/IConfig";
 
 // RDS settings
-const proxy_host_name = process.env.PROXY_HOST_NAME!;
-const port = parseInt(process.env.PORT!);
-const db_name = process.env.DB_NAME!;
-const db_user_name = process.env.DB_USER_NAME!;
-const aws_region = process.env.AWS_REGION!;
 
-export class AppointmentCountryRDSRepository implements IAppointmentCountryRepository {
-  static async createAuthToken(): Promise<string> {
+export class AppointmentCountryRDSRepository
+  implements IAppointmentCountryRepository
+{
+  constructor(private config: IConfig) {}
+
+  async createAuthToken(): Promise<string> {
     // Create RDS Signer object
+    const dbConfig = this.config.rdsDatabase;
     const signer = new Signer({
-      hostname: proxy_host_name,
-      port: port,
-      region: aws_region,
-      username: db_user_name,
+      hostname: dbConfig.proxyHostName,
+      port: dbConfig.port,
+      region: this.config.awsRegion,
+      username: dbConfig.dbUserName,
     });
 
     // Request authorization token from RDS, specifying the username
@@ -28,12 +29,13 @@ export class AppointmentCountryRDSRepository implements IAppointmentCountryRepos
 
   async dbOps(): Promise<Connection> {
     // Obtain auth token
-    const token = await AppointmentCountryRDSRepository.createAuthToken();
+    const dbConfig = this.config.rdsDatabase;
+    const token = await this.createAuthToken();
     const conn = await mysql.createConnection({
-      host: proxy_host_name,
-      user: db_user_name,
+      host: dbConfig.proxyHostName,
+      user: dbConfig.dbUserName,
       password: token,
-      database: db_name,
+      database: dbConfig.dbName,
       ssl: "Amazon RDS", // Ensure you have the CA bundle for SSL connection
     });
     return conn;
