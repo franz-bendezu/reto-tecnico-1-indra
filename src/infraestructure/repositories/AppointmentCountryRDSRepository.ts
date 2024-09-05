@@ -10,6 +10,7 @@ import { IAppointmentCountryConfig } from "../config/IAppointmentCountryConfig";
 export class AppointmentCountryRDSRepository
   implements IAppointmentCountryRepository
 {
+  token?: string;
   constructor(private config: IAppointmentCountryConfig) {}
 
   async createAuthToken(): Promise<string> {
@@ -30,11 +31,14 @@ export class AppointmentCountryRDSRepository
   async dbOps(): Promise<Connection> {
     // Obtain auth token
     const dbConfig = this.config.rdsDatabase;
-    const token = await this.createAuthToken();
+    if (!this.token) {
+      this.token = await this.createAuthToken();
+    }
+
     const conn = await mysql.createConnection({
       host: dbConfig.proxyHostName,
       user: dbConfig.dbUserName,
-      password: token,
+      password: this.token,
       database: dbConfig.dbName,
       ssl: "Amazon RDS", // Ensure you have the CA bundle for SSL connection
     });
@@ -50,5 +54,8 @@ export class AppointmentCountryRDSRepository
       appointment.lastStatus,
     ];
     await conn.execute(sql, values);
+
+    await conn.commit();
+    await conn.end();
   }
 }
