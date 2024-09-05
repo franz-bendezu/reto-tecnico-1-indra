@@ -65,14 +65,14 @@ resources:
         TableName: ${param:tableName}
         AttributeDefinitions:
           - AttributeName: scheduleId
-            AttributeType: S
-          - AttributeName: insuredId
             AttributeType: N
+          - AttributeName: insuredId
+            AttributeType: S
         KeySchema:
           - AttributeName: scheduleId
-            KeyType: HASH
-          - AttributeName: insuredId
             KeyType: RANGE
+          - AttributeName: insuredId
+            KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
