@@ -5,9 +5,9 @@ import { AppointmentCLService } from "../../domain/services/AppointmentCLService
 import { AppointmentCountryRDSRepository } from "../../infraestructure/repositories/AppointmentCountryRDSRepository";
 import { EventBridgeClient } from "@aws-sdk/client-eventbridge";
 import { AppointmentProducer } from "../../infraestructure/messasing/AppointmentProducer";
-import { ConfigEnv } from "../../infraestructure/config/ConfigEnv";
+import { AppointmentCLConfig } from "../../infraestructure/config/AppointmentCLConfig";
 
-const config = new ConfigEnv();
+const config = new AppointmentCLConfig();
 const appointmentProducer = new AppointmentProducer(
   new EventBridgeClient({}),
   config
