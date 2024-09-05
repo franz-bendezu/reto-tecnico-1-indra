@@ -1,7 +1,7 @@
 # "org" ensures this Service is used with the correct Serverless Framework Access Key.
 org: octatec
 # "app" enables Serverless Framework Dashboard features and sharing them with other Services.
-app: example
+app: appointment
 # "service" is the name of this project. This will also be added to your AWS resource names.
 service: appointment
 
@@ -33,16 +33,36 @@ build:
     # Whether to set the NODE_OPTIONS on functions to enable sourcemaps on Lambda
     setNodeOptions: true
 
+stages:
+  default:
+    params:
+      tableName: "appointment-table-${sls:stage}"
+
 provider:
   name: aws
   runtime: nodejs20.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - Fn::GetAtt: [UsersTable, Arn]
+  environment:
+    APPOINTMENT_TABLE: ${param:tableName}
 
 resources:
   Resources:
     AppointmentTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: Appointment
+        TableName: ${param:tableName}
         AttributeDefinitions:
           - AttributeName: scheduleId
             AttributeType: S
