@@ -115,7 +115,7 @@ functions:
     events:
       - httpApi:
           path: /appointments
-          method: get
+          method: post
       - httpApi:
           path: /insureds/{insuredId}/appointments
           method: get
