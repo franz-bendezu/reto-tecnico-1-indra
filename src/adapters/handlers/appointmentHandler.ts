@@ -1,6 +1,6 @@
 import type {
-  APIGatewayProxyEvent,
-  APIGatewayProxyHandler,
+  APIGatewayProxyEventV2,
+  APIGatewayProxyHandlerV2,
   SQSEvent,
   SQSHandler,
 } from "aws-lambda";
@@ -32,8 +32,8 @@ const appointmentService = new AppointmentService(
   appointmentCountryProducer
 );
 
-export const handler: APIGatewayProxyHandler | SQSHandler = async (
-  event: SQSEvent | APIGatewayProxyEvent
+export const handler: APIGatewayProxyHandlerV2 | SQSHandler = async (
+  event: SQSEvent | APIGatewayProxyEventV2
 ) => {
   if ("Records" in event) {
     for (const record of event.Records) {
@@ -41,7 +41,7 @@ export const handler: APIGatewayProxyHandler | SQSHandler = async (
 
       await appointmentService.completeAppointment(insuredId, scheduleId);
     }
-  } else if (event.httpMethod === "POST") {
+  } else if (event.routeKey === "POST /appointments") {
     try {
       const data = appointmentCreateSchema.parse(
         JSON.parse(event.body || "{}")
@@ -68,7 +68,7 @@ export const handler: APIGatewayProxyHandler | SQSHandler = async (
         };
       }
     }
-  } else if (event.httpMethod === "GET") {
+  } else if (event.routeKey === "GET /ensureds/{ensuredId}/appointments") {
     try {
       const ensuredId = insuredIdSchema.parse(event.pathParameters?.ensuredId);
       const appointments = await appointmentService.getAppointmentsByInsuredId(
