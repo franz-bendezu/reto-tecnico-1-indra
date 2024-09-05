@@ -63,6 +63,9 @@ provider:
     APPOINTMENT_TABLE: ${param:tableName}
     SNS_TOPIC_ARN:
       Ref: sns
+    EVENT_BUS_NAME: "appointment-service"
+    EVENT_SOURCE: "appointment.service"
+    EVENT_DETAIL_TYPE: "appointmentCompleted"
 
 resources:
   Resources:
@@ -83,7 +86,7 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-          
+
     sns:
       Type: AWS::SNS::Topic
       Properties:
