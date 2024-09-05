@@ -4,13 +4,14 @@ import { IAppointmentProducer } from "./IAppointmentProducer";
 import {
   EventBridgeClient,
   PutEventsCommand,
+  PutEventsCommandInput,
 } from "@aws-sdk/client-eventbridge";
 
 export class AppointmentProducer implements IAppointmentProducer {
   constructor(private eventBridgeClient: EventBridgeClient, private config: IAppointmentCountryConfig ) {}
   async sendAppointmentCountry(appointment: IAppointmentCreate): Promise<void> {
     const eventBridgeConfig = this.config.eventBridge;
-    const params = {
+    const params:PutEventsCommandInput = {
       Entries: [
         {
           Detail: JSON.stringify(appointment),
