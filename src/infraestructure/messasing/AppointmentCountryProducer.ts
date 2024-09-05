@@ -10,7 +10,7 @@ import { IAppointmentConfig } from "../config/IAppointmentConfig";
 export class AppointmentCountryProducer implements IAppointmentCountryProducer {
   constructor(private snsClient: SNSClient, private config: IAppointmentConfig) {}
   async sendAppointment(appointment: IAppointmentCreate): Promise<void> {
-    const snsConfig = this.config.sns;
+    const snsConfig = this.config;
     const params: PublishCommandInput = {
       Message: JSON.stringify(appointment),
       MessageAttributes: {
@@ -19,10 +19,7 @@ export class AppointmentCountryProducer implements IAppointmentCountryProducer {
           StringValue: appointment.countryISO,
         },
       },
-      TopicArn:
-        appointment.countryISO === "PE"
-          ? snsConfig.topicArnPE
-          : snsConfig.topicArnCL,
+      TopicArn: snsConfig.snsTopicArn,
     };
     await this.snsClient.send(new PublishCommand(params));
   }

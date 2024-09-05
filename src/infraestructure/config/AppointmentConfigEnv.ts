@@ -1,16 +1,10 @@
-import { IAppointmentConfig, ISnsConfig } from "./IAppointmentConfig";
+import { IAppointmentConfig } from "./IAppointmentConfig";
 
 export class AppointmentConfigEnv implements IAppointmentConfig {
-  get sns(): ISnsConfig {
-    return {
-      get topicArnPE(): string {
-        return process.env.SNS_TOPIC_ARN_PE!;
-      },
-      get topicArnCL(): string {
-        return process.env.SNS_TOPIC_ARN_CL!;
-      },
-    };
+  get snsTopicArn(): string {
+    return process.env.SNS_TOPIC_ARN!;
   }
+
   get dynamoDBTableName(): string {
     return process.env.APPOINTMENT_TABLE!;
   }
